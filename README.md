@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mrloop/ember-retry.svg?branch=master)](https://travis-ci.org/mrloop/ember-retry)
+
 # ember-retry
 
 [Ember](https://ember-cli.com) addon for exponetial backoff retries of a function.
