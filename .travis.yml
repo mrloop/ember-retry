@@ -33,3 +33,7 @@ install:
 
 script:
   - ember try $EMBER_TRY_SCENARIO test
+
+addons:
+  code_climate:
+    repo_token: 7decb11f293894e0aa9569a92a913bfbc9c066ea203720b8cc418b32243ecf33
