@@ -49,7 +49,8 @@ retry(()=>{
 
 ## Alternatives
 
-Why don't you use existing alternative instead?
+_Why don't you use existing alternative instead e.g. ember-backoff?_
 I wanted a cleaner way to retry a function where a promise wasn't returned.
 
 * [ember-backoff](https://github.com/GavinJoyce/ember-backoff)
+* [ember-concurrency](https://github.com/machty/ember-concurrency) like [this](http://blog.mrloop.com/javascript/ember/2016/04/12/retrying-functions-with-ember-concurrency.html)
