@@ -22,7 +22,7 @@ let retry = function (timerArg){
       return new Ember.RSVP.Promise((resolve, reject)=>{
         r.asPromise(fnc).then((result)=>{
           resolve(result);
-        }).catch((error)=>{
+        }).catch(()=>{
           Ember.run.later(()=>{
             r.retryIt(fnc, maxRetries, retries+1).then((result)=>{
               resolve(result);
