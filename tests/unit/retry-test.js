@@ -26,7 +26,7 @@ test('it work with function that throws', function(assert){
     assert.ok(false, result);
     done();
   }).catch((error)=>{
-    assert.ok(true, error);
+    assert.equal("I'm throwing", error);
     done();
   });
 });
