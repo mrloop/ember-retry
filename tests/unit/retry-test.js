@@ -26,7 +26,7 @@ test('it work with function that throws', function(assert){
     assert.ok(false, result);
     done();
   }).catch((error)=>{
-    assert.ok(true, error);
+    assert.equal("I'm throwing", error);
     done();
   });
 });
@@ -46,6 +46,19 @@ test('it works with function returning a promise', function(assert) {
   let done = assert.async();
   retry(()=>{
     return Ember.RSVP.resolve('success');
+  }).then((result)=>{
+    assert.equal(result, 'success');
+    done();
+  }).catch((error)=>{
+    assert.ok(false, error);
+    done();
+  });
+});
+
+test('it works with function returning a scalar', function(assert) {
+  let done = assert.async();
+  retry(() => {
+    return 'success';
   }).then((result)=>{
     assert.equal(result, 'success');
     done();
