@@ -39,14 +39,19 @@ let retry = function (timerArg){
     },
 
     asPromise: function(fnc){
-      return new Ember.RSVP.Promise((resolve, reject)=>{ try {
-        let returnVal = fnc(resolve, reject);
-        if(r.isPromise(returnVal)){ //handle promise returned
-          returnVal.then((result)=> resolve(result), (error)=> reject(error));
+      return new Ember.RSVP.Promise((resolve, reject)=>{ 
+        try {
+          let returnVal = fnc(resolve, reject);
+          if(r.isPromise(returnVal)){ //handle promise returned
+            returnVal.then((result)=> resolve(result), (error)=> reject(error));
+          }
+          else {
+            resolve(returnVal);
+          }
+        } catch(error) {
+          reject(error);
         }
-      } catch(error) {
-        reject(error);
-      }});
+      });
     },
 
     setTimerArg: function(timerArg){

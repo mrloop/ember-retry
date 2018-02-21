@@ -55,6 +55,19 @@ test('it works with function returning a promise', function(assert) {
   });
 });
 
+test('it works with function returning a scalar', function(assert) {
+  let done = assert.async();
+  retry(() => {
+    return 'success';
+  }).then((result)=>{
+    assert.equal(result, 'success');
+    done();
+  }).catch((error)=>{
+    assert.ok(false, error);
+    done();
+  });
+});
+
 test('throws errors, rejects promise then eventually passes', function (assert) {
   assert.expect(4);
   let done = assert.async();
