@@ -1,5 +1,6 @@
 import { isPresent, typeOf } from '@ember/utils';
 import { later } from '@ember/runloop';
+import { isNone } from '@ember/utils';
 import { Promise as EmberPromise, reject } from 'rsvp';
 
 let retry = function (timerArg){
@@ -41,15 +42,16 @@ let retry = function (timerArg){
     },
 
     asPromise: function(fnc){
-      return new EmberPromise((resolve, reject)=>{ 
+      return new EmberPromise((resolve, reject)=>{
         try {
           let returnVal = fnc(resolve, reject);
-          if(r.isPromise(returnVal)){ //handle promise returned
+          if(r.isPromise(returnVal)){ // handle promise returned
             returnVal.then((result)=> resolve(result), (error)=> reject(error));
           }
-          else {
+          else if (!isNone(returnVal)) { // handle scalar value returned
             resolve(returnVal);
           }
+          // handle no value returned, will be handle by resolve, reject being called in fnc
         } catch(error) {
           reject(error);
         }

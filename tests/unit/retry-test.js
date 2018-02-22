@@ -1,6 +1,7 @@
 import { resolve } from 'rsvp';
 import retry from 'dummy/retry';
 import { module, test } from 'qunit';
+import { later } from '@ember/runloop';
 
 module('Unit | Utility | retry');
 
@@ -82,7 +83,7 @@ test('throws errors, rejects promise then eventually passes', function (assert) 
       throw `count ${count}`;
     }else if(count === 3){
       assert.ok(true);
-      reject(`count ${count}`);
+      later(() => reject(`count ${count}`), 1);
     }else if(count === 4){
       resolve('my return');
     }
