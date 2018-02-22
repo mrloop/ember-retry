@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { isPresent, typeOf } from '@ember/utils';
+import { later } from '@ember/runloop';
+import { Promise as EmberPromise, reject } from 'rsvp';
 
 let retry = function (timerArg){
 
@@ -19,11 +21,11 @@ let retry = function (timerArg){
     },
 
     retryLater: function(fnc, maxRetries, retries){
-      return new Ember.RSVP.Promise((resolve, reject)=>{
+      return new EmberPromise((resolve, reject)=>{
         r.asPromise(fnc).then((result)=>{
           resolve(result);
         }).catch(()=>{
-          Ember.run.later(()=>{
+          later(()=>{
             r.retryIt(fnc, maxRetries, retries+1).then((result)=>{
               resolve(result);
             }, (error)=> {
@@ -35,11 +37,11 @@ let retry = function (timerArg){
     },
 
     isPromise: function(obj){
-      return Ember.isPresent(obj) && Ember.typeOf(obj.then) === 'function';
+      return isPresent(obj) && typeOf(obj.then) === 'function';
     },
 
     asPromise: function(fnc){
-      return new Ember.RSVP.Promise((resolve, reject)=>{ 
+      return new EmberPromise((resolve, reject)=>{ 
         try {
           let returnVal = fnc(resolve, reject);
           if(r.isPromise(returnVal)){ //handle promise returned
@@ -56,9 +58,9 @@ let retry = function (timerArg){
 
     setTimerArg: function(timerArg){
       r.delayFnc = r.exponentialDelayFnc;
-      if(Ember.typeOf(timerArg) === 'number'){
+      if(typeOf(timerArg) === 'number'){
         r.delay = timerArg;
-      }else if(Ember.typeOf(timerArg) === 'function'){
+      }else if(typeOf(timerArg) === 'function'){
         r.delayFnc = timerArg;
       }
     }
@@ -68,8 +70,8 @@ let retry = function (timerArg){
 }
 
 export default function(fnc, maxRetries=5, timerArg) {
-  if(fnc === null || fnc === undefined || Ember.typeOf(fnc) !== 'function'){
-    return Ember.RSVP.reject('Function required');
+  if(fnc === null || fnc === undefined || typeOf(fnc) !== 'function'){
+    return reject('Function required');
   } else {
     return retry(timerArg).retryIt(fnc, maxRetries, 0);
   }

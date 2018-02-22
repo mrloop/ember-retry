@@ -1,6 +1,6 @@
+import { resolve } from 'rsvp';
 import retry from 'dummy/retry';
 import { module, test } from 'qunit';
-import Ember from 'ember';
 
 module('Unit | Utility | retry');
 
@@ -45,7 +45,7 @@ test('it rejects when no function', function(assert) {
 test('it works with function returning a promise', function(assert) {
   let done = assert.async();
   retry(()=>{
-    return Ember.RSVP.resolve('success');
+    return resolve('success');
   }).then((result)=>{
     assert.equal(result, 'success');
     done();
