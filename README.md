@@ -44,7 +44,7 @@ retry(() => {
   if (Math.random() > 0.5) {
     return 'What am I trying to do?';
   }
-}).then(str) => {
+}).then((str) => {
   // str is 'What am I trying to do?' if successful;
 })
 ```
@@ -55,7 +55,7 @@ retry(() => {
 
 ## Running Tests
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
+* `yarn test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
