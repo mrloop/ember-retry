@@ -22,7 +22,7 @@ retry(() => {
 });
 ```
 
-By default will retry 5 times after 500ms, 1000ms, 2000ms, 4000ms, 16000ms.
+By default will retry 5 times after 500ms, 1000ms, 2000ms, 4000ms, 8000ms.
 The number of retries, initial delay before retries and the function used to calculate retry delay can all be configured.
 
 ```javascript
