@@ -116,3 +116,53 @@ test('backoff delay count starts at 0 and increments by 1 until max', function(a
   });
 
 });
+
+test('does not retry if the condition fails', function(assert){
+  assert.expect(1);
+  let done = assert.async();
+  retry(()=> {
+    throw "I'm throwing";
+  }, 5, ()=>{return 2;}, () => {false})
+  .then((result)=>{
+    assert.ok(false, result);
+    done();
+  }).catch(()=>{
+    assert.ok(true);
+    done();
+  });
+});
+
+test('retries with failure at end', function(assert){
+  assert.expect(1);
+  let done = assert.async();
+  retry(()=> {
+    throw "I'm throwing";
+  }, 5, ()=>{return 2;}, () => {true})
+  .then((result)=>{
+    assert.ok(false, result);
+    done();
+  }).catch(()=>{
+    assert.ok(true);
+    done();
+  });
+});
+
+test('retries if the condition passes', function(assert){
+  assert.expect(6);
+  let done = assert.async();
+  let count = 0;
+  retry(()=> {
+    count = count + 1;
+    throw `count ${count}`;
+    }, 5, (retry)=>{
+      assert.equal(retry, count-1);
+      return 1;
+  }, 5, ()=>{return 2;}, () => {true})
+  .then(()=>{
+    assert.ok(true);
+    done();
+  }).catch(()=>{
+    assert.ok(true);
+    done();
+  });
+});
