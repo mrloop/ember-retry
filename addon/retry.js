@@ -6,11 +6,11 @@ import { Promise as EmberPromise, reject } from 'rsvp';
 let retry = function (timerArg){
 
   let r = {
-    retryIt: function(fnc, maxRetries=5, retries){
+    retryIt: function(fnc, maxRetries=5, retries, conditionFunc){
       if(retries >= maxRetries){
         return r.asPromise(fnc);
       } else {
-        return r.retryLater(fnc, maxRetries, retries);
+        return r.retryLater(fnc, maxRetries, retries, conditionFunc);
       }
     },
 
@@ -21,24 +21,44 @@ let retry = function (timerArg){
       return Math.pow(2, retries) * r.delay;
     },
 
-    retryLater: function(fnc, maxRetries, retries){
+    retryLater: function(fnc, maxRetries, retries, conditionFunc){
       return new EmberPromise((resolve, reject)=>{
         r.asPromise(fnc).then((result)=>{
           resolve(result);
-        }).catch(()=>{
-          later(()=>{
-            r.retryIt(fnc, maxRetries, retries+1).then((result)=>{
-              resolve(result);
-            }, (error)=> {
+        }).catch((error)=>{
+          if (r.isFunc(conditionFunc)) {
+            if (conditionFunc(error)) {
+              // If conditionFunc allows the retry then retry, otherwise reject
+              // e.g. In case of a 401 and the person doesn't want to retry
+              r.delayedRetry(fnc, maxRetries, retries, conditionFunc, resolve, reject)
+            } else {
               reject(error);
-            });
-          }, r.delayFnc(retries));
+            }
+          } else {
+            // If the conditionFunc isn't passed, it will by default go here
+            r.delayedRetry(fnc, maxRetries, retries, conditionFunc, resolve, reject)
+          }
         });
       });
     },
 
+    // Function that retries in case of failure
+    delayedRetry: function(fnc, maxRetries, retries, conditionFunc, resolve, reject) {
+      later(()=>{
+        r.retryIt(fnc, maxRetries, retries + 1, conditionFunc).then((result)=>{
+          resolve(result);
+        }, (error)=> {
+          reject(error);
+        });
+      }, r.delayFnc(retries));
+    },
+
     isPromise: function(obj){
-      return isPresent(obj) && typeOf(obj.then) === 'function';
+      return isPresent(obj) && r.isFunc(obj.then);
+    },
+
+    isFunc: function(obj){
+      return isPresent(obj) && typeOf(obj) === 'function';
     },
 
     asPromise: function(fnc){
@@ -71,10 +91,10 @@ let retry = function (timerArg){
   return r;
 }
 
-export default function(fnc, maxRetries=5, timerArg) {
+export default function(fnc, maxRetries=5, timerArg, conditionFunc) {
   if(fnc === null || fnc === undefined || typeOf(fnc) !== 'function'){
     return reject('Function required');
   } else {
-    return retry(timerArg).retryIt(fnc, maxRetries, 0);
+    return retry(timerArg).retryIt(fnc, maxRetries, 0, conditionFunc);
   }
 }
