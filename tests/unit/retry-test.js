@@ -117,52 +117,77 @@ test('backoff delay count starts at 0 and increments by 1 until max', function(a
 
 });
 
+let fncToRetry = () => { throw count++ };
+let maxRetries = 5;
+let delayFnc = () => 2;
+let count = 0;
+
 test('does not retry if the condition fails', function(assert){
-  assert.expect(1);
+  assert.expect(2);
   let done = assert.async();
-  retry(()=> {
-    throw "I'm throwing";
-  }, 5, ()=>{return 2;}, () => {false})
-  .then((result)=>{
-    assert.ok(false, result);
-    done();
-  }).catch(()=>{
+  count = 0;
+  let conditionFnc = () => {
     assert.ok(true);
+    return false;
+  }
+
+  retry(
+    fncToRetry,
+    maxRetries,
+    delayFnc,
+    conditionFnc
+  )
+  .then(() => done())
+  .catch((errorCount)=>{
+    assert.equal(errorCount, 0);
     done();
   });
 });
 
-test('retries with failure at end', function(assert){
-  assert.expect(1);
-  let done = assert.async();
-  retry(()=> {
-    throw "I'm throwing";
-  }, 5, ()=>{return 2;}, () => {true})
-  .then((result)=>{
-    assert.ok(false, result);
-    done();
-  }).catch(()=>{
-    assert.ok(true);
-    done();
-  });
-});
-
-test('retries if the condition passes', function(assert){
+test('retries if the condition passes until maxRetries', function(assert){
   assert.expect(6);
   let done = assert.async();
-  let count = 0;
-  retry(()=> {
-    count = count + 1;
-    throw `count ${count}`;
-    }, 5, (retry)=>{
-      assert.equal(retry, count-1);
-      return 1;
-  }, 5, ()=>{return 2;}, () => {true})
-  .then(()=>{
+  count = 0;
+  let conditionFnc = () => {
     assert.ok(true);
+    return true;
+  }
+
+  retry(
+    fncToRetry,
+    maxRetries,
+    delayFnc,
+    conditionFnc
+  )
+  .then(() => done())
+  .catch((errorCount)=>{
+    assert.equal(errorCount, 5);
     done();
-  }).catch(()=>{
+  });
+});
+
+test('retries if the condition passes until no failure', function(assert){
+  assert.expect(3);
+  let done = assert.async();
+  count = 0;
+  let fncToRetry = () => {
+    if (count == 3) return count;
+    throw count++;
+  };
+  let conditionFnc = () => {
     assert.ok(true);
+    return true;
+  }
+
+  retry(
+    fncToRetry,
+    maxRetries,
+    delayFnc,
+    conditionFnc
+  )
+  .then(() => done())
+  .catch((errorCount)=>{
+    assert.equal(errorCount, 3);
     done();
   });
 });
