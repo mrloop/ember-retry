@@ -3,7 +3,7 @@ import { later } from '@ember/runloop';
 import { isNone } from '@ember/utils';
 import { Promise as EmberPromise, reject } from 'rsvp';
 
-let retry = function (timerArg){
+let retry = function (delayArg){
 
   let r = {
     retryIt: function(fnc, maxRetries=5, retries, conditionFunc){
@@ -78,23 +78,23 @@ let retry = function (timerArg){
       });
     },
 
-    setTimerArg: function(timerArg){
+    setDelayArg: function(delayArg){
       r.delayFnc = r.exponentialDelayFnc;
-      if(typeOf(timerArg) === 'number'){
-        r.delay = timerArg;
-      }else if(typeOf(timerArg) === 'function'){
-        r.delayFnc = timerArg;
+      if(typeOf(delayArg) === 'number'){
+        r.delay = delayArg;
+      }else if(typeOf(delayArg) === 'function'){
+        r.delayFnc = delayArg;
       }
     }
   }
-  r.setTimerArg(timerArg);
+  r.setDelayArg(delayArg);
   return r;
 }
 
-export default function(fnc, maxRetries=5, timerArg, conditionFunc) {
+export default function(fnc, maxRetries=5, delayArg, conditionFunc) {
   if(fnc === null || fnc === undefined || typeOf(fnc) !== 'function'){
     return reject('Function required');
   } else {
-    return retry(timerArg).retryIt(fnc, maxRetries, 0, conditionFunc);
+    return retry(delayArg).retryIt(fnc, maxRetries, 0, conditionFunc);
   }
 }
