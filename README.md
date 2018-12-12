@@ -49,6 +49,14 @@ retry(() => {
 })
 ```
 
+Can pass an anonymous function to retry conditionally
+In this case if the response.status is not 401
+```javascript
+retry(() => {
+  return this.store.find('user', 353232);
+}, 5, 1000, (response) => { return (response.status !== 401) });
+```
+
 ## Installation
 
 `ember install ember-retry`
