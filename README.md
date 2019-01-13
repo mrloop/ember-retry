@@ -4,6 +4,12 @@
 
 [Ember](https://ember-cli.com) addon for exponetial backoff retries of a function.
 
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+
 ```javascript
 import retry from 'ember-retry/retry'
 
