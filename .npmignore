@@ -10,23 +10,22 @@
 /.editorconfig
 /.ember-cli
 /.env*
+/.eslintcache
 /.eslintignore
 /.eslintrc.js
+/.git/
 /.gitignore
-/.gitkeep
 /.template-lintrc.js
 /.travis.yml
 /.watchmanconfig
 /bower.json
 /config/ember-try.js
 /CONTRIBUTING.md
-/dist
 /ember-cli-build.js
-/tests
-/tmp
 /testem.js
+/tests/
 /yarn.lock
-**/.gitkeep
+.gitkeep
 
 # ember-try
 /.node_modules.ember-try/
