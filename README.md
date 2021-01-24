@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mrloop/ember-retry.svg?branch=master)](https://travis-ci.org/mrloop/ember-retry)
+![CI](https://github.com/mrloop/ember-retry/workflows/CI/badge.svg)
 
 ember-retry
 ==============================================================================
