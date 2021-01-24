@@ -1,14 +1,28 @@
 [![Build Status](https://travis-ci.org/mrloop/ember-retry.svg?branch=master)](https://travis-ci.org/mrloop/ember-retry)
 
-# ember-retry
+ember-retry
+==============================================================================
 
 [Ember](https://ember-cli.com) addon for exponetial backoff retries of a function.
 
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v2.18 or above
+* Ember.js v3.16 or above
 * Ember CLI v2.13 or above
+* Node.js v10 or above
+
+
+Installation
+------------------------------------------------------------------------------
+
+```
+ember install ember-prismic-dom
+```
+
+
+Usage
+------------------------------------------------------------------------------
 
 ```javascript
 import retry from 'ember-retry/retry'
@@ -63,17 +77,24 @@ retry(() => {
 }, 5, 1000, (response) => { return (response.status !== 401) });
 ```
 
-## Installation
 
-`ember install ember-retry`
-
-## Running Tests
+Running Tests
+------------------------------------------------------------------------------
 
 * `yarn test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
-## Alternatives
+
+Contributing
+------------------------------------------------------------------------------
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
+
+Alternatives
+------------------------------------------------------------------------------
+
 
 _Why don't you use existing alternative instead e.g. ember-backoff?_
 
