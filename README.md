@@ -17,7 +17,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install ember-prismic-dom
+ember install ember-retry
 ```
 
 
